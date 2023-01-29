@@ -7,6 +7,27 @@ from typing import Dict
 
 from utils.geodataframe import get_geodataframe_coordinates_dict
 
+def plot_spatial_network(gdf: gpd.GeoDataFrame, spatial_network: nx.Graph, title: str = 'Spatial network') -> None:
+    _, ax = plt.subplots(1, 1, figsize=(15, 10))
+
+    gdf.plot(ax=ax, edgecolor='darkgray', color='white')
+
+    coordinates = get_geodataframe_coordinates_dict(gdf)
+
+    nx.draw(
+        spatial_network,
+        coordinates,
+        ax=ax,
+        node_size=20,
+        width=1,
+        node_color="black",
+        edge_color="black",
+        alpha=.6,
+    )
+
+    plt.title(title)
+
+    plt.show()
 
 def plot_metric(gdf: gpd.GeoDataFrame, spatial_network: nx.Graph, metric_dictionary: Dict[int, str],
                 title: str = 'Metric plot', cmap: colors.LinearSegmentedColormap = plt.cm.YlGnBu) -> None:
