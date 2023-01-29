@@ -1,7 +1,7 @@
 import networkx as nx
 from typing import Dict, Optional
 
-_METRICS = ['in-deg', 'out-deg', 'betweenness']
+_METRICS = ['in-deg', 'out-deg', 'betweenness', 'closeness']
 
 def get_metric(network: nx.Graph, metric: str, normalize: bool = True, weight: Optional[str] = None) -> Dict[int, float]:
     assert metric in _METRICS, f'Please, use one of the followng metrics: {"; ".join(_METRICS)}'
@@ -13,6 +13,9 @@ def get_metric(network: nx.Graph, metric: str, normalize: bool = True, weight: O
     elif metric == 'betweenness':
         metric_dict = nx.betweenness_centrality(network, k=None, normalized=normalize, weight=weight, endpoints=False, 
                                                 seed=42)
+        return metric_dict
+    elif metric == 'closeness':
+        metric_dict = nx.closeness_centrality(network, u=None, distance=weight)
         return metric_dict
     else:
         raise Exception('Metric not found')
