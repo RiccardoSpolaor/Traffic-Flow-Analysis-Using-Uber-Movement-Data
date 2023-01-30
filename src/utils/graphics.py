@@ -29,7 +29,7 @@ def plot_spatial_network(gdf: gpd.GeoDataFrame, spatial_network: nx.Graph, title
 
     plt.show()
 
-def plot_metric(gdf: gpd.GeoDataFrame, spatial_network: nx.Graph, metric_dictionary: Dict[int, str],
+def plot_centrality(gdf: gpd.GeoDataFrame, spatial_network: nx.Graph, metric_dictionary: Dict[int, str],
                 title: str = 'Metric plot', cmap: colors.LinearSegmentedColormap = plt.cm.YlGnBu) -> None:
     fig, ax = plt.subplots(1, figsize=(15, 10))
 
