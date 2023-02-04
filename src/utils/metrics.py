@@ -86,8 +86,8 @@ def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, k: 
             new_network.remove_node(node)
             
         n += 1
-            
+
     for node in new_network.nodes():
-        node_cores_dict[node] = None
+        node_cores_dict[node] = n
     
     return node_cores_dict
