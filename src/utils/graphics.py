@@ -57,7 +57,7 @@ def plot_centrality(gdf: gpd.GeoDataFrame, spatial_network: nx.Graph, metric_dic
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
-    norm = colors.Normalize(vmin=0., vmax=1.)
+    norm = colors.Normalize(vmin=min(metric_dictionary.values()), vmax=max(metric_dictionary.values()))
     fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap),
                 cax=cax)
 
