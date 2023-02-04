@@ -16,12 +16,11 @@ def get_nodes_centrality(network: nx.Graph, metric: str, normalize: bool = True,
     elif metric == 'out-deg':
         metric_dict = { n: network.out_degree(n, weight=weight) for n in network.nodes() }
     elif metric == 'betweenness':
-        metric_dict = nx.betweenness_centrality(network, k=None, normalized=normalize, weight=weight, endpoints=False, 
-                                                seed=42)
-        return metric_dict
+        metric_dict = nx.betweenness_centrality(network, k=None, normalized=False, weight=weight, endpoints=False, seed=42)
+        #return metric_dict
     elif metric == 'closeness':
         metric_dict = nx.closeness_centrality(network, u=None, distance=weight)
-        return metric_dict
+        # return metric_dict
     elif metric == 'pagerank':
         metric_dict = nx.pagerank(network, alpha=0.85, max_iter=100, tol=1e-06, nstart=None, weight=weight, dangling=None)
     elif metric == 'hits':
@@ -31,32 +30,23 @@ def get_nodes_centrality(network: nx.Graph, metric: str, normalize: bool = True,
         raise Exception('Metric not found')
 
     if normalize:
-        return { n: v / max(metric_dict.values()) for n, v in metric_dict.items() }
+        return { n: (v - min(metric_dict.values())) / (max(metric_dict.values()) - min(metric_dict.values())) 
+                for n, v in metric_dict.items() }
     else:
         return metric_dict
 
-_COMMUNITY_METRICS = ['girvan-newman', 'k-core']
-
-'''def get_nodes_community(network: nx.Graph, metric: str, weight: Optional[str] = None, k: int = 2) -> Dict[int, int]:
-    assert metric in _COMMUNITY_METRICS, f'Please, use one of the followng metrics: {"; ".join(_COMMUNITY_METRICS)}'
+def normalize_centrality_measures(centrality_dict: Dict[int, Dict[int, float]]) -> Dict[int, Dict[int, float]]:
+    centrality_dict = deepcopy(centrality_dict)
     
-    def most_central_edge(network: nx.Graph):
-        centrality = nx.edge_betweenness_centrality(network, weight=weight)
-        return max(centrality, key=centrality.get)
+    values_list = [v for centralities in centrality_dict.values() for v in centralities.values()]
+    min_value = min(values_list)
+    max_value = max(values_list)
+    
+    for centralities in centrality_dict.values():
+        for k, v in centralities.items():
+            centralities[k] = (v - min_value) / (max_value - min_value)
 
-    if metric == 'girvan-newman':
-        communities_iterator = nx.community.girvan_newman(network, most_valuable_edge=most_central_edge)
-        
-        for _ in range(k - 1):
-            communities = next(communities_iterator)
-        
-        #limited = itertools.takewhile(lambda c: len(c) <= k, communities_iterator)
-        #for communities in limited:
-        #    print(tuple(sorted(c) for c in communities))
-        #*_, last = limited
-        return { c: i for i, community in enumerate(communities) for c in community }
-    else:
-        raise Exception('Metric not found')''';
+    return centrality_dict
 
 def get_girvan_newman_communities(network: nx.Graph, weight: Optional[str] = None, k: int = 2) -> Dict[int, int]:
     def most_central_edge(network: nx.Graph):
