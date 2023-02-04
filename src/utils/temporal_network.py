@@ -1,6 +1,6 @@
 import networkx as nx
 import pandas as pd
-from typing import Dict
+from typing import Dict, List
 
 class TemporalNetwork(nx.DiGraph):
     """ 
@@ -31,8 +31,18 @@ class TemporalNetwork(nx.DiGraph):
                 undirected_network[u][v]['mean_travel_time'] /= 2
                 
         return undirected_network
+
+def get_movement_dataframe(csv_path: str) -> pd.DataFrame:
+    df = pd.read_csv(csv_path)
+    df.drop(['standard_deviation_travel_time', 'geometric_mean_travel_time', 'geometric_standard_deviation_travel_time'],
+            inplace=True, axis=1)
     
-def get_temporal_networks_from_pandas_edgelist(df: pd.DataFrame) -> Dict[int, TemporalNetwork]:
+    df['sourceid'] = df['sourceid'].apply(str)
+    df['dstid'] = df['dstid'].apply(str)
+    
+    return df
+
+def get_temporal_networks_from_pandas_edgelist(df: pd.DataFrame, hours: List[int]) -> Dict[int, TemporalNetwork]:
     return {
         h: nx.from_pandas_edgelist(
             df[df.hod == h],
@@ -40,5 +50,5 @@ def get_temporal_networks_from_pandas_edgelist(df: pd.DataFrame) -> Dict[int, Te
             target='dstid',
             edge_attr='mean_travel_time',
             create_using=TemporalNetwork())
-        for h in range(24)
+        for h in hours
     }
