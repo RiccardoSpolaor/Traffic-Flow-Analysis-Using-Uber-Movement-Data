@@ -69,13 +69,12 @@ def get_girvan_newman_communities(network: nx.Graph, weight: Optional[str] = Non
     
     return { c: i for i, community in enumerate(communities) for c in community }
 
-def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, n_communities: int = 2,
-                            k: Optional[int] = None) -> Dict[int, int]:
+def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, k: Optional[int] = None) -> Dict[int, int]:
     new_network = deepcopy(network)
     node_cores_dict = {}
     n = 0
     
-    for n in range(n_communities):
+    while len(new_network.nodes()):
         try:
             k_core_subgraph = k_core(new_network, k=k, weight=weight)
         except ValueError:
@@ -84,6 +83,8 @@ def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, n_c
         for node in k_core_subgraph.nodes():
             node_cores_dict[node] = n
             new_network.remove_node(node)
+            
+        n += 1
             
     for node in new_network.nodes():
         node_cores_dict[node] = None
