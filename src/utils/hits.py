@@ -116,7 +116,6 @@ def weighted_hits(G, weight='weight', max_iter=100, tol=1.0e-8, nstart=None, nor
     else:
         raise nx.PowerIterationFailedConvergence(max_iter)
     if normalized:
-        print('here')
         s = 1.0 / sum(a.values())
         for n in a:
             a[n] *= s
