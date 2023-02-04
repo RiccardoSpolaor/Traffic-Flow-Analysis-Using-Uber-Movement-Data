@@ -20,6 +20,8 @@ class TemporalNetwork(nx.DiGraph):
             The undirected version of the original graph
         """
         undirected_network = nx.Graph()
+        
+        undirected_network.add_nodes_from(self.nodes)
 
         undirected_network.add_edges_from(self.edges(), mean_travel_time=0)
 
