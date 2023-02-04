@@ -44,17 +44,20 @@ __all__ = [
 ]
 
 def core_number_weighted(network: nx.Graph, weight: str):
+    # Get weighted node degree dictionary.
     degrees = dict(network.degree(weight=weight))
-    # Sort nodes by degree.
+    # Sort nodes by non-decreasing degree.
     nodes = sorted(degrees, key=degrees.get)
-    
+
+    # Initialize core_number dictionary
     cores = {k: 0 for k in nodes}
-    
-    i = 0
 
     for i in range(len(nodes)):
+        # Get current node
         u = nodes[i]
+        # Initialize its core value as its degree
         cores[u] = degrees[u]
+        # Update neighbouring nodes core number
         for w in list(nx.all_neighbors(network, u)):
             if cores[u] < degrees[w]:
                 degrees[w] = max(degrees[w] - network[u][w][weight], cores[u])
