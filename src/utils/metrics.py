@@ -3,6 +3,7 @@ import networkx as nx
 from typing import Dict, Optional
 
 from utils.core import k_core
+from utils.hits import weighted_hits
 
 _CENTRALITY_METRICS = ['in-deg', 'out-deg', 'betweenness', 'closeness', 'pagerank', 'hits']
 
@@ -24,7 +25,7 @@ def get_nodes_centrality(network: nx.Graph, metric: str, normalize: bool = True,
     elif metric == 'pagerank':
         metric_dict = nx.pagerank(network, alpha=0.85, max_iter=100, tol=1e-06, nstart=None, weight=weight, dangling=None)
     elif metric == 'hits':
-        metric_dict = nx.hits(network, max_iter=100, tol=1e-08, nstart=None, normalized=normalize)
+        metric_dict = weighted_hits(network, normalized=normalize, weight=weight)
         return metric_dict
     else:
         raise Exception('Metric not found')
@@ -90,21 +91,3 @@ def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, k: 
         node_cores_dict[node] = None
     
     return node_cores_dict
-
-
-'''    while len(new_network.nodes()):
-        k_core_subgraph = k_core(new_network, k=k, weight=weight)
-
-        for node in k_core_subgraph.nodes():
-            node_cores_dict[node] = n
-            new_network.remove_node(node)
-
-        #node_cores_dict
-        #k_cores[n] = k_core_subgraph.nodes()
-
-        n += 1
-
-        if n == n_communities:
-            break'''
-
-
