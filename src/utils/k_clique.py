@@ -5,7 +5,7 @@ import networkx as nx
 __all__ = ["k_clique_communities"]
 
 
-def k_clique_communities(G, weight, k=2, l=1_000):
+def k_clique_communities(G, weight, k=2, l=100):
     """Find k-clique communities in graph using the percolation method.
 
     A k-clique community is the union of all cliques of size k that
@@ -53,8 +53,8 @@ def k_clique_communities(G, weight, k=2, l=1_000):
     
     for c in cliques_:
         subgraph = G.subgraph(c)
-        geometric_mean = [w[weight] for _, _, w in subgraph.edges(data=True)]
-        if len(c) >= k and geometric_mean >= l:
+        gm = geometric_mean([w[weight] for _, _, w in subgraph.edges(data=True)])
+        if len(c) >= k and gm >= l:
             cliques.append(frozenset(c))
 
     # cliques = [frozenset(c) for c in cliques if len(c) >= k (multiply_values)**(1/n)]
