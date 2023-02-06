@@ -4,6 +4,7 @@ from typing import Dict, Optional
 
 from utils.core import k_core
 from utils.hits import weighted_hits
+from utils.k_clique import k_clique_communities
 
 _CENTRALITY_METRICS = ['in-deg', 'out-deg', 'betweenness', 'closeness', 'pagerank', 'hits']
 
@@ -81,3 +82,14 @@ def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, k: 
         node_cores_dict[node] = n
     
     return node_cores_dict
+
+def get_k_clique_communities(network: nx.Graph, k: int, l: float, weight: Optional[str] = None) -> Dict[int, int]:
+    community_iterator = k_clique_communities(network, weight=weight, l=l, k=k)
+
+    communities = dict()
+    for i, clique in enumerate(list(community_iterator)):
+        for c in clique:
+            communities[c] = i
+
+    return communities
+
