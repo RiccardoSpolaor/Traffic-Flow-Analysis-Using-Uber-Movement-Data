@@ -68,7 +68,7 @@ def core_number_weighted(network: nx.Graph, weight: str):
 
 #@nx._dispatch
 @not_implemented_for("multigraph")
-def core_number(G, weight=None):
+def core_number(G):
     """Returns the core number for each vertex.
 
     A k-core is a maximal subgraph that contains nodes of degree k or more.
@@ -111,7 +111,7 @@ def core_number(G, weight=None):
             "Consider using G.remove_edges_from(nx.selfloop_edges(G))."
         )
         raise NetworkXError(msg)
-    degrees = dict(G.degree(weight=weight))
+    degrees = dict(G.degree())
     # Sort nodes by degree.
     nodes = sorted(degrees, key=degrees.get)
     bin_boundaries = [0]
