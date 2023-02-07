@@ -3,6 +3,7 @@ import networkx as nx
 from typing import Dict, Optional
 
 from utils.core import k_core
+from utils.relaxed_k_clique import get_k_clubs
 from utils.hits import weighted_hits
 from utils.k_clique import k_clique_communities
 
@@ -92,4 +93,27 @@ def get_k_clique_communities(network: nx.Graph, k: int, l: float, weight: Option
             communities[c] = i
 
     return communities
+
+def get_k_clubs_communities(network: nx.Graph, k: int, weight: str) -> Dict[int, int]:
+    new_network = deepcopy(network)
+    node_cores_dict = {}
+    n = 0
+    
+    while len(new_network.nodes()):
+        try:
+            k_clubs = get_k_clubs(new_network, k=k, weight=weight)
+        except ValueError:
+            break
+
+        for sub in k_clubs:
+            for n in sub:
+                node_cores_dict[node] = n
+                new_network.remove_node(node)
+        n += 1
+        k /= 2
+
+    for node in new_network.nodes():
+        node_cores_dict[node] = n
+    
+    return node_cores_dict
 
