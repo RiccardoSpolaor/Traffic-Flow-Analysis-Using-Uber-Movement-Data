@@ -1,5 +1,6 @@
 import geopandas as gpd
 import networkx as nx
+from shapely.validation import make_valid
 from sklearn.metrics.pairwise import haversine_distances
 from typing import Dict
 
@@ -18,6 +19,8 @@ def _get_spatial_network_adjacency_dict(gdf: gpd.GeoDataFrame) -> Dict[int, Dict
         The adjacency dictionary (key: ID, value: {'weight': float}).
     """
     adjacency_dict = dict()
+    
+    gdf.geometry = gdf.geometry.apply(lambda x: make_valid(x))
 
     for row in gdf.itertuples(index=False):
         # Get the row ID and centroid
