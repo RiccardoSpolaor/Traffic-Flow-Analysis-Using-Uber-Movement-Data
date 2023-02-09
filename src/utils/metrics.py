@@ -99,7 +99,7 @@ def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, k: 
 def get_k_clique_communities(network: nx.Graph, k: Optional[int] = None, weight: Optional[str] = None) -> Dict[int, int]:
     new_network = deepcopy(network)
     n = 0
-    k = k if k is not None else min(2, sum([d[1] for d in nx.degree(new_network)]))
+    k = k if k is not None else 2
     communities = dict()
     
     while len(new_network.nodes()):
@@ -120,10 +120,10 @@ def get_k_clique_communities(network: nx.Graph, k: Optional[int] = None, weight:
                 if new_network.has_node(c):
                     new_network.remove_node(c)
             n += 1
-        k += 1
-        k = max(k, 2)
-        for node in new_network.nodes():
-            communities[node] = n
+        #k += 1
+        #k = max(k, 2)
+    for node in new_network.nodes():
+        communities[node] = n
 
     return communities
 
