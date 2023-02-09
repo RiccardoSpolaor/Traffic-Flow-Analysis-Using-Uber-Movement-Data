@@ -7,6 +7,8 @@ from utils.relaxed_k_clique import get_k_clubs
 from utils.hits import weighted_hits
 from utils.k_clique import k_clique_communities
 
+from statistics import geometric_mean
+
 _CENTRALITY_METRICS = ['in-deg', 'out-deg', 'betweenness', 'closeness', 'pagerank', 'hits']
 
 def get_nodes_centrality(network: nx.Graph, metric: str, normalize: bool = True,
@@ -84,13 +86,44 @@ def get_k_cores_communities(network: nx.Graph, weight: Optional[str] = None, k: 
     
     return node_cores_dict
 
-def get_k_clique_communities(network: nx.Graph, k: int, l: float, weight: Optional[str] = None) -> Dict[int, int]:
+'''def get_k_clique_communities(network: nx.Graph, k: int, l: float, weight: Optional[str] = None) -> Dict[int, int]:
     community_iterator = k_clique_communities(network, weight=weight, l=l, k=k)
 
     communities = dict()
     for i, clique in enumerate(list(community_iterator)):
         for c in clique:
             communities[c] = i
+
+    return communities'''
+
+def get_k_clique_communities(network: nx.Graph, k: Optional[int] = None, weight: Optional[str] = None) -> Dict[int, int]:
+    new_network = deepcopy(network)
+    n = 0
+    k = k if k is not None else min(2, sum([d[1] for d in nx.degree(new_network)]))
+    communities = dict()
+    
+    while len(new_network.nodes()):
+        try:
+            l = geometric_mean([d[weight] for _, _, d in new_network.edges(data=True)])
+        except:
+            l = 0
+            
+        print(k)
+        
+        community_iterator = k_clique_communities(new_network, weight=weight, l=l, k=k)
+        all_cliques = list(community_iterator)
+        if len(all_cliques) == 0:
+            break
+        for clique in all_cliques:
+            for c in clique:
+                communities[c] = n
+                if new_network.has_node(c):
+                    new_network.remove_node(c)
+            n += 1
+        k += 1
+        k = max(k, 2)
+        for node in new_network.nodes():
+            communities[node] = n
 
     return communities
 
