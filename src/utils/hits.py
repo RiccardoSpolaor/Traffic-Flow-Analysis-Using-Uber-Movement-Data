@@ -23,7 +23,7 @@ SOFTWARE.
 """
 import networkx as nx
 
-def weighted_hits(G, weight='weight', max_iter=100, tol=1.0e-8, nstart=None, normalized=True):
+def weighted_hits(G, weight='weight', max_iter=1_000, tol=1.0e-8, nstart=None, normalized=True):
     """Returns HITS hubs and authorities values for nodes.
     The HITS algorithm computes two numbers for a node.
     Authorities estimates the node value based on the incoming links.
