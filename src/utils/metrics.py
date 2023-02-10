@@ -6,6 +6,7 @@ from utils.core import k_core
 from utils.relaxed_k_clique import get_k_clubs
 from utils.hits import weighted_hits
 from utils.k_clique import k_clique_communities
+from utils.k_truss import weighted_k_truss
 
 from statistics import geometric_mean
 
@@ -107,9 +108,7 @@ def get_k_clique_communities(network: nx.Graph, k: Optional[int] = None, weight:
             l = geometric_mean([d[weight] for _, _, d in new_network.edges(data=True)])
         except:
             l = 0
-            
-        print(k)
-        
+ 
         community_iterator = k_clique_communities(new_network, weight=weight, l=l, k=k)
         all_cliques = list(community_iterator)
         if len(all_cliques) == 0:
@@ -120,33 +119,40 @@ def get_k_clique_communities(network: nx.Graph, k: Optional[int] = None, weight:
                 if new_network.has_node(c):
                     new_network.remove_node(c)
             n += 1
-        #k += 1
-        #k = max(k, 2)
+
     for node in new_network.nodes():
         communities[node] = n
 
     return communities
 
-def get_k_clubs_communities(network: nx.Graph, k: int, weight: str) -> Dict[int, int]:
+def get_k_truss_communities(network: nx.Graph, weight: str, w: Optional[str] = None, k: Optional[int] = None) -> Dict[int, int]:
     new_network = deepcopy(network)
     node_cores_dict = {}
     n = 0
     
+    if k is None:
+        k = 2
+    if w is None:
+        weigths = [d[weight] for _, _, d in list(network.edges(data=True))]
+        w = sum(weigths) / len(weigths)
+    
     while len(new_network.nodes()):
         try:
-            k_clubs = get_k_clubs(new_network, k=k, weight=weight)
+            k_truss_subgraph = weighted_k_truss(new_network, weight=weight, k=k, w=w)
         except ValueError:
             break
 
-        for sub in k_clubs:
-            for n in sub:
-                node_cores_dict[node] = n
-                new_network.remove_node(node)
+        for node in k_truss_subgraph.nodes():
+            node_cores_dict[node] = n
+            new_network.remove_node(node)
+            
         n += 1
-        k /= 2
 
     for node in new_network.nodes():
         node_cores_dict[node] = n
     
     return node_cores_dict
 
+def get_louvain_communities(network: nx.Graph, weight: Optional[str] = None) -> Dict[int, int]:
+    communities = nx.community.louvain_communities(network, weight=weight, resolution=1, threshold=1e-07, seed=42)
+    return { c: i for i, community in enumerate(communities) for c in community }
