@@ -3,7 +3,6 @@ import networkx as nx
 from typing import Dict, Optional
 
 from utils.core import k_core
-from utils.relaxed_k_clique import get_k_clubs
 from utils.hits import weighted_hits
 from utils.k_clique import k_clique_communities
 from utils.k_truss import weighted_k_truss
@@ -53,9 +52,9 @@ def normalize_centrality_measures(centrality_dict: Dict[int, Dict[int, float]]) 
 
     return centrality_dict
 
-def get_girvan_newman_communities(network: nx.Graph, weight: Optional[str] = None, k: int = 2) -> Dict[int, int]:
+def get_girvan_newman_communities(network: nx.Graph, weight: Optional[str] = None, k: int = 2, seed: int = 42) -> Dict[int, int]:
     def most_central_edge(network: nx.Graph):
-        centrality = nx.edge_betweenness_centrality(network, weight=weight)
+        centrality = nx.edge_betweenness_centrality(network, weight=weight, seed=42)
         return max(centrality, key=centrality.get)
 
     communities_iterator = nx.community.girvan_newman(network, most_valuable_edge=most_central_edge)
