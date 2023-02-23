@@ -1,10 +1,16 @@
+"""
+Edited from the Networkx Documentation
+
+Edits list:
+- Addition of types
+- Addition of extra parameters or controls in some functions to allow the use of weights
+"""
+
 from collections import defaultdict
 from statistics import geometric_mean
 import networkx as nx
 
-__all__ = ["k_clique_communities"]
-
-def k_clique_communities(G, weight, k=2, l=100):
+def k_clique_communities(G: nx.Graph, weight: str, k: int = 2, l: float = 100):
     """Find k-clique communities in graph using the percolation method.
 
     A k-clique community is the union of all cliques of size k that
@@ -13,6 +19,9 @@ def k_clique_communities(G, weight, k=2, l=100):
     Parameters
     ----------
     G : NetworkX graph
+    
+    weigth : str
+        Weight to use to compute k-clique
 
     k : int
        Size of smallest clique
