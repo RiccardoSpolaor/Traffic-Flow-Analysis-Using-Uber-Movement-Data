@@ -226,7 +226,7 @@ def plot_temporal_network_centrality_distribution(centralities: Dict[int, Dict[s
     center = (bins[0][:-1] + bins[0][1:]) / 2
 
     # Cumulative distribution
-    plt.figure(figsize=(15, 10))
+    plt.figure(figsize=(15, 5))
     plt.xticks(bin_edges[::2])
     for k, v in cumsums.items():
         plt.plot(center, v, 'o-', label=f'Time {k:2d}:00')
@@ -234,7 +234,7 @@ def plot_temporal_network_centrality_distribution(centralities: Dict[int, Dict[s
     plt.xlabel('centrality')
     plt.grid(axis='y')
     plt.legend(loc='lower center', ncol=len(cumsums), bbox_to_anchor=(.5, -.25),
-          columnspacing=7)
+          columnspacing=8.5)
     plt.show()
 
 def plot_spatial_network_centrality_distribution(centralities: Dict[str, float], metric: str):
