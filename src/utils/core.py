@@ -1,4 +1,6 @@
 """
+Edited from the Networkx Documentation
+
 Find the k-cores of a graph.
 
 The k-core is found by recursively pruning nodes with degrees less than k.
@@ -27,23 +29,32 @@ L. Hébert-Dufresne, J. A. Grochow, and A. Allard
 Scientific Reports 6, 31708 (2016)
 http://doi.org/10.1038/srep31708
 
+Edits list:
+- Addition of types
+- Addition of extra parameters or controls in some functions to allow the use of weights
+- Function `core_number_weighted` created from scratch.
+
 """
 import networkx as nx
 from networkx.exception import NetworkXError
 from networkx.utils import not_implemented_for
-import numpy as np
+from typing import Callable, Dict, Optional
 
-__all__ = [
-    "core_number",
-    "k_core",
-    "k_shell",
-    "k_crust",
-    "k_corona",
-    "k_truss",
-    "onion_layers",
-]
+def core_number_weighted(network: nx.Graph, weight: str) -> Dict[str, float]:
+    """Get the weighted core number of each node in the network
 
-def core_number_weighted(network: nx.Graph, weight: str):
+    Parameters
+    ----------
+    network : Graph
+        The mnetwork from which the core numbers are obtained
+    weight : str
+        The name of the weight on the edges that has to be used to compute the weighted core number of the nodes
+
+    Returns
+    -------
+    { str: float }
+        Dictionary containing for each node its weighted core number
+    """
     # Get weighted node degree dictionary.
     degrees = dict(network.degree(weight=weight))
     # Sort nodes by non-decreasing degree.
@@ -68,7 +79,7 @@ def core_number_weighted(network: nx.Graph, weight: str):
 
 #@nx._dispatch
 @not_implemented_for("multigraph")
-def core_number(G):
+def core_number(G: nx.Graph):
     """Returns the core number for each vertex.
 
     A k-core is a maximal subgraph that contains nodes of degree k or more.
@@ -139,7 +150,8 @@ def core_number(G):
 
 
 
-def _core_subgraph(G, k_filter, k=None, core=None, weight=None):
+def _core_subgraph(G: nx.Graph, k_filter: Callable[[float, float, Dict[str, float]],bool], k: Optional[float] = None,
+                   core: Optional[Dict[str, float]] = None, weight: Optional[str] = None) -> nx.Graph:
     """Returns the subgraph induced by nodes passing filter `k_filter`.
 
     Parameters
@@ -156,7 +168,8 @@ def _core_subgraph(G, k_filter, k=None, core=None, weight=None):
     core : dict, optional
       Precomputed core numbers keyed by node for the graph `G`.
       If not specified, the core numbers will be computed from `G`.
-
+    weight : str, optional
+      The name of the weight on the edges that has to be used to compute the weighted core number of the nodes
     """
     if core is None:
         if weight is None:
@@ -168,9 +181,8 @@ def _core_subgraph(G, k_filter, k=None, core=None, weight=None):
     nodes = (v for v in core if k_filter(v, k, core))
     return G.subgraph(nodes).copy()
 
-
-#@nx._dispatch
-def k_core(G, k=None, core_number=None, weight=None):
+def k_core(G: nx.Graph, k: Optional[float] =None, core_number: Optional[Optional[Dict[str, float]]] = None, 
+           weight: Optional[str] = None) -> nx.Graph:
     """Returns the k-core of G.
 
     A k-core is a maximal subgraph that contains nodes of degree k or more.
