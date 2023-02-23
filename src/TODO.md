@@ -1,5 +1,0 @@
-- Consider whether or not to normalize the temporal network metrics over the 4 networks.
-- Check if closeness is normalized and correct
-- Add modularity cluster measure
-- Add weighted version of k-clique/clans/plexes
-- Add a final clustering measure
