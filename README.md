@@ -23,6 +23,9 @@ The analysis is divided into two steps. Firstly, node centrality is computed in 
 
 </div>
 
+Data can be downloaded from the [*Uber Movement*](https://movement.uber.com/) website, considering for Bristol and Cincinnati:
+- The `Travel Times by Hour of Day (Weekdays Only)` of `2020 Quarter 1` file in the section `ALL DATA`;
+- The file in the section `GEO BOUNDARIES`.
 
 ## Dependencies
 - [GeoPandas](https://geopandas.org/en/stable/index.html)
