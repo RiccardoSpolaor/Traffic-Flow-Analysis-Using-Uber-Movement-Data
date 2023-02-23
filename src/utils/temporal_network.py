@@ -35,6 +35,18 @@ class TemporalNetwork(nx.DiGraph):
         return undirected_network
 
 def get_movement_dataframe(csv_path: str) -> pd.DataFrame:
+    """Function to obtain a pandas dataframe from the Uber Movement data.
+
+    Parameters
+    ----------
+    csv_path : str
+        Path of the csv file containing the Uber Movement data.
+
+    Returns
+    -------
+    DataFrame
+        The data converted in pandas dataframe.
+    """
     df = pd.read_csv(csv_path)
     df.drop(['standard_deviation_travel_time', 'geometric_mean_travel_time', 'geometric_standard_deviation_travel_time'],
             inplace=True, axis=1)
@@ -45,6 +57,20 @@ def get_movement_dataframe(csv_path: str) -> pd.DataFrame:
     return df
 
 def get_temporal_networks_from_pandas_edgelist(df: pd.DataFrame, hours: List[int]) -> Dict[int, TemporalNetwork]:
+    """Function to build the dictionary of temporal networks at a specific hour from a pandas dataframe containing the edge data.
+
+    Parameters
+    ----------
+    df : DataFrame
+        The pandas dataframe containing the edge data.
+    hours : List[int]
+        List of hours to consider to build the dictionary of temporal networks.
+
+    Returns
+    -------
+    { int: TemporalNetwork }
+        Dictionary of temporal networks (values) at a specific hour (keys).
+    """
     return {
         h: nx.from_pandas_edgelist(
             df[df.hod == h],
