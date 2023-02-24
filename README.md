@@ -32,7 +32,7 @@ Data can be downloaded from the [*Uber Movement*](https://movement.uber.com/) we
 - [Matplotlib](https://pypi.org/project/matplotlib/)
 - [NetworkX](https://networkx.org/documentation/stable/reference/index.html)
 - [NumPy](https://pypi.org/project/numpy/)
-. [Scikit-learn](https://scikit-learn.org/stable/index.html)
+- [Scikit-learn](https://scikit-learn.org/stable/index.html)
 - [Shapely](https://shapely.readthedocs.io/en/stable/manual.html)
 - [Pandas](https://pypi.org/project/pandas/)
 
